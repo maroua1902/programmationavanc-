@@ -1,0 +1,44 @@
+{% extends 'Films/base.html' %}
+{% load static %}
+
+{% block title %}Réserver - {{ seance.film.titre }}{% endblock %}
+
+{% block content %}
+
+<h2>🎟️ Réserver des sièges pour : {{ seance.film.titre }}</h2>
+
+{% if seance.film.affiche %}
+    <img src="{{ seance.film.affiche.url }}" alt="{{ seance.film.titre }}" style="width:200px; margin-bottom: 15px;">
+{% endif %}
+
+<p><strong>Salle :</strong> {{ seance.salle.nom }} | <strong>Date :</strong> {{ seance.date }} | <strong>Heure :</strong> {{ seance.heure }}</p>
+
+{% if error %}
+    <p style="color:red;">{{ error }}</p>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    <div class="sieges-grid">
+    {% for siege in sieges %}
+            <label class="siege {% if siege.est_reserve %}reserve{% endif %}">
+                <input type="radio"
+                       name="siege"
+                       value="{{ siege.id }}"
+                       {% if siege.est_reserve %}disabled{% endif %}
+                       required>
+                 L{{ siege.ligne }}C{{ siege.colonne }}
+            </label>
+        {% endfor %}
+    </div>
+
+    <button type="submit">Confirmer la réservation</button>
+</form>
+
+
+<br>
+<!-- Liens retour -->
+<a href="{% url 'film_detail' seance.film.id %}">← Retour au film</a> |
+<a href="{% url 'home' %}">🏠 Retour à l'accueil</a>
+
+{% endblock %}

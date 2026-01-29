@@ -1,0 +1,23 @@
+{% extends 'Films/base.html' %}
+{% block title %}Confirmation de réservation{% endblock %}
+
+{% block content %}
+<h2>🎫 Vos tickets</h2>
+
+{% for r in reservations %}
+<div class="ticket">
+    <p><strong>Film :</strong> {{ r.seance.film.titre }}</p>
+    <p><strong>Salle :</strong> {{ r.seance.salle.nom }}</p>
+    <p><strong>Siège :</strong> L{{ r.siege.ligne }}C{{ r.siege.colonne }}</p>
+    <p><strong>Date séance :</strong> {{ r.seance.date }} — {{ r.seance.heure }}</p>
+    <p><strong>Date réservation :</strong> {{ r.date_reservation }}</p>
+    <form method="post" action="{% url 'annuler_reservation' r.id %}">
+        {% csrf_token %}
+        <button type="submit">❌ Annuler</button>
+    </form>
+</div>
+<hr>
+{% endfor %}
+
+<a href="{% url 'home' %}">🏠 Retour à l'accueil</a>
+{% endblock %}
